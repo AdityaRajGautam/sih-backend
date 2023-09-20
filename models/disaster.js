@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const disasterSchema = new Schema({
-  type: {
+  typeOfDisaster: {
     type: String,
     required: true,
   },
@@ -13,11 +13,11 @@ const disasterSchema = new Schema({
   location: {
     type: {
       type: String,
-      enum: ['Point'],
+      enum: ["Point"],
     },
     coordinates: {
       type: [Number],
-      index: '2dsphere',
+      index: "2dsphere",
     },
   },
   description: {
@@ -26,11 +26,11 @@ const disasterSchema = new Schema({
   agencies: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Agency',
+      ref: "Agency",
     },
   ],
 });
 
-const Disaster = mongoose.model('Disaster', disasterSchema);
+const Disaster = mongoose.model("Disaster", disasterSchema);
 
 module.exports = Disaster;
