@@ -1,32 +1,34 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-// const sessionRoutes = require('./routes/sessionRoutes');
-// const authRoutes = require('./routes/authRoutes'); // Add this line
-const config = require('./config/config');
+import express  from "express";
+import ConnectDB from "./config/db.js";
+import dotenv from 'dotenv';
+import authRoutes from './routes/userRoutes.js'
 
+//rest object
 const app = express();
 
-app.use(bodyParser.json());
+//configure env
+dotenv.config();
 
 // Connect to MongoDB
-mongoose
-  .connect(config.dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
-    console.error('MongoDB connection error:', error);
-  });
+ConnectDB();
 
-// API Routes with Version and Prefix
-// app.use('/api/v1/sessions', sessionRoutes);
-// app.use('/api/v1/auth', authRoutes); // Add this line
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+//middlewares
+app.use(express.json())
+
+//routes
+app.use('/api/n1/auth',authRoutes);
+
+
+//rest Api  
+app.get('/',(req,res)=>{
+  res.send("<h1>Welecome to SIH </h1>")
+})
+
+//PORT
+const PORT = process.env.PORT || 5000;
+
+//app listen
+app.listen(PORT,()=>{
+  console.log(`Server is Running ${process.env.DEV_MODE} mode on port ${PORT}`);
+}) 
