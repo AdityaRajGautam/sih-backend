@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import  mongoose from "mongoose"
 
-const resourceSchema = new Schema({
+const resourceSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -21,12 +20,10 @@ const resourceSchema = new Schema({
     },
   },
   ownerAgency: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Agency',
     required: true,
   },
 });
 
-const Resource = mongoose.model('Resource', resourceSchema);
-
-module.exports = Resource;
+export default mongoose.model("Resources",resourceSchema)

@@ -1,43 +1,51 @@
-import Alert from '../models/alert';
+import Alert from '../models/alert.js';
 
-const sendAlertController = async (req, res) => {
+// Create a new alert
+export const createAlertController = async (req, res) => {
   try {
-    const { senderAgencyId, recipientAgencyId, type, description } = req.body;
+    const {
+        senderAgency,
+        recipientAgency,
+        severity,
+        timestamp,
+        description,
+      } = req.body;
 
-    // Create a new alert instance
-    const alert = new Alert({
-      senderAgency: senderAgencyId,
-      recipientAgency: recipientAgencyId,
-      type,
-      description,
-    });
+    const newAlert = await new Alert({
+        senderAgency,
+        recipientAgency,
+        severity,
+        timestamp,
+        description,
+      }).save();
 
-    // Save the alert to the database
-    await alert.save();
-
-    res.status(201).json({ message: 'Alert sent successfully', alert });
+    res.status(201).json({
+        success:true,
+        message:"Alert sent successfully",
+        newAlert});
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error sending alert', error });
+    res.status(500).json({ 
+        success:false,
+        error: 'Internal server error' });
   }
 };
 
-const receiveAlertController = async (req, res) => {
+
+// Get alerts for a specific agency
+export const getAlertsForAgencyController = async (req, res) => {
   try {
-    // Extract the agency ID from the JWT token or any other authentication mechanism
-    const recipientAgencyId = req.user.agencyId; // Replace with the actual JWT token field or authentication mechanism
-
-    // Query alerts that are received by the agency
-    const receivedAlerts = await Alert.find({ recipientAgency: recipientAgencyId });
-
-    res.status(200).json({ message: 'Received alerts retrieved successfully', receivedAlerts });
+    const agencyId = req.params.agencyId;
+    const alerts = await Alert.find({ recipientAgency: agencyId })
+    if (!alerts) {
+        return res.status(404).json({ error: "NO Record found" });
+      }
+    res.status(200).json({
+        success: true,
+        message:"Alerts fetch successfully",
+        alerts,
+      });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error retrieving received alerts', error });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
-
-export default {
-  receiveAlertController, sendAlertController,
-};
-

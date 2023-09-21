@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
 
-const disasterSchema = new Schema({
+const disasterSchema=new mongoose.Schema({
   typeOfDisaster: {
     type: String,
     required: true,
@@ -27,12 +26,10 @@ const disasterSchema = new Schema({
   },
   agencies: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Agency",
     },
   ],
 });
 
-const Disaster = mongoose.model("Disaster", disasterSchema);
-
-module.exports = Disaster;
+export default mongoose.model("Disasters",disasterSchema)

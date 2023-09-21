@@ -1,7 +1,7 @@
 import axios from 'axios';
-import Agency from '../models/agency'
-import Disaster from "../models/disaster";
-import Resource from '../models/resource';
+import Agency from '../models/agency.js'
+import Disaster from "../models/disaster.js";
+import Resource from '../models/resource.js';
 const MAPBOX_API_KEY = "pk.eyJ1IjoiaGFyc2hzaW5kaHUwNDA4IiwiYSI6ImNsbXMxbnI3ejA3dzgybG85dHVjZXQ0bHgifQ.n4D40V2mXLsYh5Bjs7H78A";
 import { comparePassword, hashPassword } from "../helpers/bcrypt.js";
 
