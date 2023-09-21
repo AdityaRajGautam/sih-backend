@@ -1,4 +1,4 @@
-import  mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const resourceSchema = new mongoose.Schema({
   name: {
@@ -9,21 +9,37 @@ const resourceSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  location: { // where the resource is stored or available
+  location: {
     type: {
       type: String,
-      enum: ['Point'],
+      enum: ["Point"],
     },
     coordinates: {
       type: [Number],
-      index: '2dsphere',
+      index: "2dsphere",
     },
   },
   ownerAgency: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Agency',
+    ref: "Agency",
     required: true,
   },
+  status: {
+    type: String, // You can define specific statuses, e.g., 'available', 'in-use', 'under-repair', etc.
+    required: true,
+  },
+  availability: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+  sharedWith: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Agency',
+    },
+  ],
 });
 
-export default mongoose.model("Resources",resourceSchema)
+const Resource = mongoose.model("Resource", resourceSchema);
+export default Resource;
