@@ -177,7 +177,7 @@ export const updateAgency = async (req, res) => {
         .json({ message: "Unauthorized: User is not logged in" });
     }
 
-    const { name, email, contact, phone, expertise } = req.body;
+    const { name, email, contact, phone, expertise, } = req.body;
     const agency = await Agency.findById(req.user._id);
 
     // Check if the agency exists
@@ -185,8 +185,7 @@ export const updateAgency = async (req, res) => {
       return res.status(404).json({ message: "Agency not found" });
     }
 
-    if (req.body.contact) {
-      const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
+    const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
       const geocodingResponse = await axios.get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
           address
@@ -199,7 +198,6 @@ export const updateAgency = async (req, res) => {
         return res.status(400).json({ message: "Invalid address" });
       }
       const { lat, lng } = results[0].geometry.location;
-    }
 
     const updatedAgency = await Agency.findByIdAndUpdate(
       req.user._id,
