@@ -25,7 +25,7 @@ export const registercontroller = async (req, res) => {
     }
 
     //register user
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
     //save
     const user = await new User({
       username,
@@ -70,8 +70,8 @@ export const loginController = async (req, res) => {
       });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
+    const match = await comparePassword(password, user.password);
+    if (!match) {
       return res.status(400).send({
         success: false,
         message: "invalid password or email",
@@ -116,7 +116,7 @@ export const forgotPasswordController = async (req, res) => {
         message: "Email is invalid",
       });
     }
-    const hashed = await bcrypt.hash(password, 10);
+    const hashed = await hashPassword(newpassword);
     await User.findByIdAndUpdate(user._id, { password: hashed });
     res.status(200).send({
       success: true,

@@ -1,58 +1,70 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const agencySchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  contact: {
+const agencySchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
+      required: true,
+      unique: true,
     },
-    phoneNumber: {
+    password: {
       type: String,
+      required: true,
     },
-    address: {
-      street: {
+    contact: {
+      email: {
         type: String,
       },
-      city: {
+      phoneNumber: {
         type: String,
       },
-      state: {
-        type: String,
-      },
-      postalCode: {
-        type: String,
-      },
-      country: {
-        type: String,
+      address: {
+        street: {
+          type: String,
+        },
+        city: {
+          type: String,
+        },
+        state: {
+          type: String,
+        },
+        postalCode: {
+          type: String,
+        },
+        country: {
+          type: String,
+        },
       },
     },
-  },
-  location: {
-    type: {
-      type: String,
-      enum: ["Point"],
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+      },
+      coordinates: {
+        type: [Number],
+        index: "2dsphere",
+      },
     },
-    coordinates: {
-      type: [Number],
-      index: "2dsphere",
+    expertise: {
+      type: [String],
+    },
+    lastReportedActivity: {
+      type: Date,
+      default: Date.now,
+    },
+    registeredAt: {
+      type: Date,
+      default: Date.now,
     },
   },
-  expertise: {
-    type: [String],
-  },
-  lastReportedActivity: { // Add this field
-    type: Date,
-  },
-  registeredAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true }
+);
 
 const Agency = mongoose.model("Agency", agencySchema);
-
 module.exports = Agency;
