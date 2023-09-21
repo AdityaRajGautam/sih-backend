@@ -2,7 +2,6 @@ import axios from 'axios';
 import Agency from '../models/agency.js'
 import Disaster from "../models/disaster.js";
 import Resource from '../models/resource.js';
-const MAPBOX_API_KEY = "pk.eyJ1IjoiaGFyc2hzaW5kaHUwNDA4IiwiYSI6ImNsbXMxbnI3ejA3dzgybG85dHVjZXQ0bHgifQ.n4D40V2mXLsYh5Bjs7H78A";
 import { comparePassword, hashPassword } from "../helpers/bcrypt.js";
 
 // registerAgency controller
@@ -36,7 +35,7 @@ export const registerAgency = async (req, res) => {
     const geocodingResponse = await axios.get(
       `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
         address
-      )}.json?access_token=${MAPBOX_API_KEY}`
+      )}.json?access_token=${process.env.MAPBOX_API_KEY}`
     );
 
     const features = geocodingResponse.data.features;
