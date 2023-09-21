@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 
 const alertSchema = new Schema({
   senderAgency: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Agency',
     required: true,
   },
   recipientAgency: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Agency',
     required: true,
   },

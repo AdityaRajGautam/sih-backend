@@ -5,7 +5,6 @@ const MAPBOX_API_KEY = 'pk.eyJ1IjoiaGFyc2hzaW5kaHUwNDA4IiwiYSI6ImNsbXMxbnI3ejA3d
 
 const registerAgency = async (req, res) => {
   try {
-    // Check if the user is authenticated (e.g., by verifying the JWT token)
     if (!req.user) {
       return res.status(401).json({ message: 'Unauthorized: User is not logged in' });
     }
