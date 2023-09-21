@@ -1,34 +1,33 @@
-import express  from "express";
 import ConnectDB from "./config/db.js";
+import app from './app'
 import dotenv from 'dotenv';
-import authRoutes from './routes/userRoutes.js'
 
-//rest object
-const app = express();
+// Handling Uncaught Execption
+process.on('uncaughtException',(err)=>{
+  console.log(`Error: ${err.message}`);
+  console.log(`Shutting server due to uncaught execption`);
+  process.exit(1);
+})
 
-//configure env
+// Config
 dotenv.config();
 
 // Connect to MongoDB
 ConnectDB();
 
-
-//middlewares
-app.use(express.json())
-
-//routes
-app.use('/api/n1/auth',authRoutes);
-
-
-//rest Api  
-app.get('/',(req,res)=>{
-  res.send("<h1>Welecome to SIH </h1>")
-})
-
-//PORT
+// PORT
 const PORT = process.env.PORT || 5000;
 
-//app listen
-app.listen(PORT,()=>{
+// Firing server
+const server = app.listen(PORT,()=>{
   console.log(`Server is Running ${process.env.DEV_MODE} mode on port ${PORT}`);
-}) 
+});
+
+// Unhandled Promise Rejection
+process.on('unhandledRejection',err=>{
+  console.log(`Error: ${err.message}`);
+  console.log(`Shuting down the server due to unhandled Rejection`);
+  server.close(()=>{
+    process.exit(1);
+  })
+});
