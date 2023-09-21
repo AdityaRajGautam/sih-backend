@@ -5,6 +5,7 @@ const disasterSchema = new Schema({
   typeOfDisaster: {
     type: String,
     required: true,
+    minlenght:3
   },
   timestamp: {
     type: Date,
@@ -22,6 +23,7 @@ const disasterSchema = new Schema({
   },
   description: {
     type: String,
+    default:'No discription available'
   },
   agencies: [
     {
