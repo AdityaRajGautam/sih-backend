@@ -44,6 +44,9 @@ const agencySchema = new Schema({
   expertise: {
     type: [String],
   },
+  lastReportedActivity: { // Add this field
+    type: Date,
+  },
   registeredAt: {
     type: Date,
     default: Date.now,
