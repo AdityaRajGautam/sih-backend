@@ -1,5 +1,5 @@
-import { filterResults } from "../Utils/filterDisaster";
-import Disaster from "../models/disaster";
+import { filterResults } from "../Utils/filterDisaster.js";
+import Disaster from "../models/disaster.js";
 
 // Adding new Disaster
 export const addDisaster = async (req, res) => {

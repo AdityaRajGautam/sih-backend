@@ -59,7 +59,7 @@ const disasterSchema = new mongoose.Schema({
   },
   agencies: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Agency",
     },
   ],
