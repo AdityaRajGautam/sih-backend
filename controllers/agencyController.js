@@ -123,7 +123,7 @@ export const loginAgency = async (req, res) => {
 };
 
 //forgotpasswordController
-export const forgotPasswordController = async (req, res) => {
+export const updatePasswordController = async (req, res) => {
   try {
     if (!req.user) {
       return res
