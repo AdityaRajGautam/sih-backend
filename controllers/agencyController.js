@@ -1,10 +1,11 @@
-const axios = require("axios");
-const Agency = require("../models/agency");
-const Disaster = require("../models/disaster");
-const MAPBOX_API_KEY =
-  "pk.eyJ1IjoiaGFyc2hzaW5kaHUwNDA4IiwiYSI6ImNsbXMxbnI3ejA3dzgybG85dHVjZXQ0bHgifQ.n4D40V2mXLsYh5Bjs7H78A";
+import axios from 'axios';
+import Agency from '../models/agency'
+import Disaster from "../models/disaster";
+import Resource from '../models/resource';
+const MAPBOX_API_KEY = "pk.eyJ1IjoiaGFyc2hzaW5kaHUwNDA4IiwiYSI6ImNsbXMxbnI3ejA3dzgybG85dHVjZXQ0bHgifQ.n4D40V2mXLsYh5Bjs7H78A";
 import { comparePassword, hashPassword } from "../helpers/bcrypt.js";
 
+// registerAgency controller
 export const registerAgency = async (req, res) => {
   try {
     const { name, email, password, contact, phoneNumber, expertise } = req.body;
@@ -76,6 +77,7 @@ export const registerAgency = async (req, res) => {
   }
 };
 
+// loginAgency controller
 export const loginAgency = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -253,6 +255,7 @@ export const getAllAgencyLocations = async (req, res) => {
       return {
         _id: agency._id,
         name: agency.name,
+        email: agency.email,
         contact: agency.contact,
         expertise: agency.expertise,
         location: agency.location,
@@ -269,50 +272,36 @@ export const getAllAgencyLocations = async (req, res) => {
   }
 };
 
-export const listAgencies = async (req, res) => {
+// getAgencyResourcesAndDisasters
+export const getAgencyResourcesAndDisasters = async (req, res) => {
   try {
-    const { typeOfDisaster, resourcesAvailable, latitude, longitude } =
-      req.query;
-    const agencyQuery = {};
+    const agencyName = req.params.agencyName;
 
-    if (typeOfDisaster) {
-      const disaster = await Disaster.findOne({ typeOfDisaster });
+    // Find the agency by name
+    const agency = await Agency.findOne({ name: agencyName });
 
-      if (disaster) {
-        agencyQuery._id = { $in: disaster.agencies };
-      }
+    if (!agency) {
+      return res.status(404).json({ message: 'Agency not found' });
     }
 
-    if (resourcesAvailable) {
-      const matchingResources = await Resource.find({
-        name: resourcesAvailable,
-      });
+    // Retrieve all resources associated with the agency
+    const resources = await Resource.find({ ownerAgency: agency._id });
 
-      if (matchingResources.length > 0) {
-        agencyQuery._id = {
-          $in: matchingResources.map((resource) => resource.ownerAgency),
-        };
-      }
-    }
+    // Retrieve all disasters in which the agency has worked
+    const disasters = await Disaster.find({ agencies: agency._id });
 
-    if (latitude && longitude) {
-      agencyQuery.location = {
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: [longitude, latitude],
-          },
-          $maxDistance: 100000,
-        },
-      };
-    }
-
-    const agencies = await Agency.find(agencyQuery);
-
-    res.status(200).json({ message: "Agencies listed successfully", agencies });
+    res.status(200).json({
+      message: 'Agency resources and disasters retrieved successfully',
+      agency,
+      resources,
+      disasters,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error listing agencies", error });
+    res.status(500).json({ message: 'Error retrieving agency resources and disasters', error });
   }
 };
+
+
+
 
