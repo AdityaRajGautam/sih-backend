@@ -1,5 +1,5 @@
 import express  from "express";
-import { addDisaster, fetchDisasters, getDisaster, updateDisaster } from "../controllers/disasterController";
+import { addDisaster, fetchDisasters, getDisaster, updateDisaster } from "../controllers/disasterController.js";
 const router = express.Router();
 
 // Routes
@@ -13,4 +13,4 @@ router.route('/details').post(getDisaster);
 // Fetching all disasters
 router.route('/all').post(fetchDisasters);
 
-module.exports = router;
+export default router;

@@ -1,8 +1,5 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-
-const agencySchema = new Schema(
-  {
+import mongoose from 'mongoose'
+const agencySchema=new mongoose.Schema({
     name: {
       type: String,
       required: true,
@@ -70,5 +67,5 @@ const agencySchema = new Schema(
   { timestamps: true }
 );
 
-const Agency = mongoose.model("Agency", agencySchema);
-module.exports = Agency;
+
+export default mongoose.model("Agency",agencySchema)

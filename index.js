@@ -1,5 +1,5 @@
 import ConnectDB from "./config/db.js";
-import app from './app'
+import app from './app.js'
 import dotenv from 'dotenv';
 
 // Handling Uncaught Execption

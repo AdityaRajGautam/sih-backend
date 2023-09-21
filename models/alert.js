@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
 
-const alertSchema = new Schema({
+const alertSchema=new mongoose.Schema({
   senderAgency: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Agency',
@@ -12,7 +11,7 @@ const alertSchema = new Schema({
     ref: 'Agency',
     required: true,
   },
-  type: {
+  severity: {
     type: String,
     required: true,
   },
@@ -25,5 +24,5 @@ const alertSchema = new Schema({
   },
 });
 
-const Alert = mongoose.model('Alert', alertSchema);
-module.exports = Alert;
+
+export default mongoose.model("Alerts",alertSchema)
