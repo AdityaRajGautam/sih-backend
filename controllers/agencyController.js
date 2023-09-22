@@ -45,7 +45,8 @@ export const registerAgency = async (req, res) => {
       return res.status(400).json({ message: "Invalid address" });
     }
     console.log("Coordinates are ->>", features[0].center);
-    const coordinates = features[0].center; // Corrected variable names
+    const coordinates = features[0].center;
+    const swappedCoordinates = [coordinates[1], coordinates[0]];
     
     const hashedPassword = await hashPassword(password);
     const agency = new Agency({
@@ -58,7 +59,7 @@ export const registerAgency = async (req, res) => {
     });
     agency.location = {
       type: "Point",
-      coordinates: coordinates,
+      coordinates: swappedCoordinates,
     };
 
     // Save the agency to the database
