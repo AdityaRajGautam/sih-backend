@@ -159,7 +159,7 @@ export const shareResource = async (req, res) => {
 };
 
 
-const deleteResource = async (req, res) => {
+export const deleteResource = async (req, res) => {
   try {
     const resourceId = req.params.resourceId;
     const ownerAgencyId = req.user._id; 
@@ -184,9 +184,5 @@ const deleteResource = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Error deleting resource', error });
   }
-};
-
-module.exports = {
-  deleteResource,
 };
 
