@@ -1,7 +1,7 @@
-import axios from 'axios';
-import Agency from '../models/agency.js'
+import axios from "axios";
+import Agency from "../models/agency.js";
 import Disaster from "../models/disaster.js";
-import Resource from '../models/resource.js';
+import Resource from "../models/resource.js";
 import { comparePassword, hashPassword } from "../helpers/bcrypt.js";
 
 // registerAgency controller
@@ -178,7 +178,7 @@ export const updateAgency = async (req, res) => {
         .json({ message: "Unauthorized: User is not logged in" });
     }
 
-    const { name, email, contact, phone, expertise, } = req.body;
+    const { name, email, contact, phone, expertise } = req.body;
     const agency = await Agency.findById(req.user._id);
 
     // Check if the agency exists
@@ -187,18 +187,18 @@ export const updateAgency = async (req, res) => {
     }
 
     const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
-      const geocodingResponse = await axios.get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          address
-        )}.json?access_token=${MAPBOX_API_KEY}`
-      );
+    const geocodingResponse = await axios.get(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+        address
+      )}.json?access_token=${MAPBOX_API_KEY}`
+    );
 
-      const features = geocodingResponse.data.features;
+    const features = geocodingResponse.data.features;
 
-      if (!features || features.length === 0) {
-        return res.status(400).json({ message: "Invalid address" });
-      }
-      const { lat, lng } = results[0].geometry.location;
+    if (!features || features.length === 0) {
+      return res.status(400).json({ message: "Invalid address" });
+    }
+    const { lat, lng } = results[0].geometry.location;
 
     const updatedAgency = await Agency.findByIdAndUpdate(
       req.user._id,
@@ -280,7 +280,7 @@ export const getAgencyResourcesAndDisasters = async (req, res) => {
     const agency = await Agency.findOne({ name: agencyName });
 
     if (!agency) {
-      return res.status(404).json({ message: 'Agency not found' });
+      return res.status(404).json({ message: "Agency not found" });
     }
 
     // Retrieve all resources associated with the agency
@@ -290,17 +290,18 @@ export const getAgencyResourcesAndDisasters = async (req, res) => {
     const disasters = await Disaster.find({ agencies: agency._id });
 
     res.status(200).json({
-      message: 'Agency resources and disasters retrieved successfully',
+      message: "Agency resources and disasters retrieved successfully",
       agency,
       resources,
       disasters,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error retrieving agency resources and disasters', error });
+    res
+      .status(500)
+      .json({
+        message: "Error retrieving agency resources and disasters",
+        error,
+      });
   }
 };
-
-
-
-
