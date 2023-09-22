@@ -174,51 +174,45 @@ export const updatePasswordController = async (req, res) => {
 // update agency controller
 export const updateAgency = async (req, res) => {
   try {
-
     const { name, email, contact, phone, expertise } = req.body;
-    const agency = await Agency.findById(req.params.id);
+    const agency = await Agency.findById(req.user._id);
+    console.log(agency);
 
     // Check if the agency exists
     if (!agency) {
       return res.status(404).json({ message: "Agency not found" });
     }
-    if (contact) {
-      const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
-      const geocodingResponse = await axios.get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          address
-        )}.json?access_token=${process.env.MAPBOX_API_KEY}`
-      );
 
-      const features = geocodingResponse.data.features;
-
-      if (!features || features.length === 0) {
-        return res.status(400).json({ message: "Invalid address" });
-      }
-      const { lat, lng } = results[0].geometry.location;
-    }
-    const updatedAgency = await Agency.findByIdAndUpdate(
-      req.params.id,
-      {
-        name: name || agency.name,
-        email: email || agency.email,
-        contact: contact || agency.contact,
-        phone: phone || agency.phone,
-        location: contact
-          ? {
-              location: {
-                type: "Point",
-                coordinates: [lng, lat], 
-              },
-            }
-          : agency.location,
-        expertise: expertise || agency.expertise,
-      },
-      { new: true }
+    const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
+    const geocodingResponse = await axios.get(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+        address
+      )}.json?access_token=${process.env.MAPBOX_API_KEY}`
     );
 
+    const features = geocodingResponse.data.features;
+
+    if (!features || features.length === 0) {
+      return res.status(400).json({ message: "Invalid address" });
+    }
+    console.log("Coordinates are ->>", features[0].center);
+    const coordinates = features[0].center;
+    const swappedCoordinates = [coordinates[1], coordinates[0]];
+
+    agency.name = name || agency.name;
+    agency.email = email || agency.email;
+    agency.contact = contact || agency.contact;
+    agency.phone = phone || agency.phone;
+    agency.expertise = expertise || agency.expertise;
+
+    // Update the location coordinates
+    agency.location = {
+      type: "Point",
+      coordinates: swappedCoordinates,
+    };
+
     // Save the updated agency to the database
-    await updatedAgency.save();
+    const updatedAgency = await agency.save();
 
     res
       .status(200)
@@ -240,9 +234,7 @@ export const getAllAgencyLocations = async (req, res) => {
       return {
         _id: agency._id,
         name: agency.name,
-        email: agency.email,
         contact: agency.contact,
-        expertise: agency.expertise,
         location: agency.location,
       };
     });
@@ -260,10 +252,11 @@ export const getAllAgencyLocations = async (req, res) => {
 // getAgencyResourcesAndDisasters
 export const getAgencyResourcesAndDisasters = async (req, res) => {
   try {
-    const agencyName = req.params.agencyName;
+    const agencyId = req.params.id; // Change the parameter name to agencyId
+    console.log(agencyId);
 
-    // Find the agency by name
-    const agency = await Agency.findOne({ name: agencyName });
+    // Find the agency by ID
+    const agency = await Agency.findById(agencyId);
 
     if (!agency) {
       return res.status(404).json({ message: "Agency not found" });

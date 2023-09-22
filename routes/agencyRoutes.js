@@ -11,7 +11,7 @@ router.route('/login').post(loginAgency);
 // Route to update agency password
 router.route('/updatepassword/').put(updatePasswordController);
 // Route to update agency details
-router.route('/update/:id').put(requireSignIn,updateAgency);
+router.route('/update').put(requireSignIn,updateAgency);
 // Fetching agencies with typeOfDisaster resourcesAvailable and their locations filter
 router.route('/list/:id').get(getAgencyResourcesAndDisasters);
 // Fetch all the agencies locations
