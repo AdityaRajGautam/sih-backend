@@ -1,10 +1,11 @@
-import Resource from '../models/resource';
-import Agency from '../models/agency'; // Import your Agency model
+import Resource from '../models/resource.js';
+import Agency from '../models/agency.js'; // Import your Agency model
 
 export const createResource = async (req, res) => {
   try {
     const { name, quantity, status, availability} = req.body;
-    const ownerAgencyId = req.user._id; // Assuming you have user authentication and can access the owner agency's ID from the request
+    const ownerAgencyId = req.user._id; 
+    // Assuming you have user authentication and can access the owner agency's ID from the request
 
     // Find the owner agency to get its location coordinates
     const ownerAgency = await Agency.findById(ownerAgencyId);

@@ -7,7 +7,7 @@ import {
   getResourceStatus,
   shareResource,
   deleteResource,
-} from "../controllers/resourceController";
+} from "../controllers/resourceController.js";
 const router = express.Router();
 
 // Create a new resource
