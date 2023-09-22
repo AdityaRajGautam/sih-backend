@@ -6,50 +6,59 @@ import axios from "axios";
 export const addDisaster = async (req, res) => {
   const {
     typeOfDisaster,
-    timestamp,
-    address,
     description,
-    agencies,
     contact,
     status,
     severity,
   } = req.body;
+  const agencies = req.user._id;
+  console.log(agencies);
+
+  // Check if agencies is defined and not empty
+  if (!agencies || agencies.length === 0) {
+    return res.status(400).json({ success: false, message: "Agencies must be provided" });
+  }
+
   if (
     !typeOfDisaster ||
-    !timestamp ||
-    !address ||
     !description ||
-    !agencies ||
     !contact ||
     !status ||
     !severity
   ) {
     return res
-      .status(404)
+      .status(400)
       .json({ success: false, message: "All the fields are mandatory" });
   }
+
   try {
-    const addressFormat = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
+    const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
     const geocodingResponse = await axios.get(
       `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-        addressFormat
+        address
       )}.json?access_token=${process.env.MAPBOX_API_KEY}`
     );
 
     const features = geocodingResponse.data.features;
+
     if (!features || features.length === 0) {
       return res.status(400).json({ message: "Invalid address" });
     }
-    const { lat, lng } = features[0].geometry.location;
+    console.log("Coordinates are ->>", features[0].center);
+    const coordinates = features[0].center;
+    const swappedCoordinates = [coordinates[1], coordinates[0]];
+
+    // Define and provide a valid timestamp for the disaster
+    const timestamp = new Date();
 
     const newDisaster = await Disaster.create({
       typeOfDisaster,
       timestamp,
-      address,
+      contact,
       description,
       location: {
         type: "Point",
-        coordinates: [lng, lat],
+        coordinates: swappedCoordinates,
       },
       agencies,
       status,
@@ -60,6 +69,7 @@ export const addDisaster = async (req, res) => {
       .status(201)
       .json({ success: true, message: "New Disaster info added", newDisaster });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Failed to create disaster record" });
   }
 };
@@ -69,17 +79,16 @@ export const updateDisaster = async (req, res) => {
   const { id } = req.params;
   const {
     typeOfDisaster,
-    timestamp,
-    address,
     description,
-    agencies,
     contact,
     status,
     severity,
   } = req.body;
+  const agencyId = req.user._id;
+
   try {
     // Fetching Old disaster
-    const oldDisaster = await findById(id);
+    const oldDisaster = await Disaster.findById(id);
 
     if (!oldDisaster) {
       return res
@@ -87,33 +96,45 @@ export const updateDisaster = async (req, res) => {
         .json({ success: false, message: "No record found" });
     }
 
-    // Converting to Co-Ordinates
-    if (contact) {
-      const addressFormat = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
-      const geocodingResponse = await axios.get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          addressFormat
-        )}.json?access_token=${process.env.MAPBOX_API_KEY}`
-      );
-
-      const features = geocodingResponse.data.features;
-      if (!features || features.length === 0) {
-        return res.status(400).json({ message: "Invalid address" });
-      }
-      const { lat, lng } = features[0].geometry.location;
+    // Check if the agency updating the disaster is authorized
+    if (!oldDisaster.agencies.includes(agencyId)) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthorized to update this disaster" });
     }
-    // Updating disaster Info
+
+    // Converting to Co-Ordinates
+    const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
+    const geocodingResponse = await axios.get(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+        address
+      )}.json?access_token=${process.env.MAPBOX_API_KEY}`
+    );
+
+    const features = geocodingResponse.data.features;
+
+    if (!features || features.length === 0) {
+      return res.status(400).json({ message: "Invalid address" });
+    }
+    console.log("Coordinates are ->>", features[0].center);
+    const coordinates = features[0].center;
+    const swappedCoordinates = [coordinates[1], coordinates[0]];
+
+    // Define and provide a valid timestamp for the disaster
+    const timestamp = new Date();
+
+    // Update disaster Info
     const updatedDisaster = await Disaster.findByIdAndUpdate(
       id,
       {
         typeOfDisaster: typeOfDisaster || oldDisaster.typeOfDisaster,
         timestamp: timestamp || oldDisaster.timestamp,
-        address: address || oldDisaster.address,
+        contact: contact || oldDisaster.contact,
         description: description || oldDisaster.description,
-        agencies: agencies || oldDisaster.agencies,
+        $addToSet: { agencies: agencyId }, // Add the new agency ID to the list
         status: status || oldDisaster.status,
         severity: severity || oldDisaster.severity,
-        location: location || oldDisaster.location,
+        location: swappedCoordinates || oldDisaster.location,
       },
       { new: true }
     );
@@ -124,7 +145,7 @@ export const updateDisaster = async (req, res) => {
       updatedDisaster,
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal server Errror" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

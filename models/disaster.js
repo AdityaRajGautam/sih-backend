@@ -9,7 +9,6 @@ const disasterSchema = new mongoose.Schema({
   timestamp: {
     type: Date,
     default: Date.now,
-    required: true,
   },
   severity: {
     type: String,
@@ -18,29 +17,31 @@ const disasterSchema = new mongoose.Schema({
   status: {
     type: String,
     enum:["active","inactive"],
-    default:'inactive',
+    default:'active',
     required: true,
   },
-  address: {
-    street: {
-      type: String,
-      required: true,
-    },
-    city: {
-      type: String,
-      required: true,
-    },
-    state: {
-      type: String,
-      required: true,
-    },
-    postalCode: {
-      type: String,
-      required: true,
-    },
-    country: {
-      type: String,
-      required: true,
+  contact: {
+    address: {
+      street: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      state: {
+        type: String,
+        required: true,
+      },
+      postalCode: {
+        type: String,
+        required: true,
+      },
+      country: {
+        type: String,
+        required: true,
+      },
     },
   },
   location: {
