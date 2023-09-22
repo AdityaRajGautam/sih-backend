@@ -22,3 +22,15 @@ export const resourceEndPoints = {
 }
 
 // DISASTER END POINTS
+export const disasterEndPoints = {
+    ADD_DISASTER_API: BASE_URL + "/disasterauth/addNewDisaster",
+    UPDATE_DISASTER_API: BASE_URL + "/disasterauth/updateDisaster/:id",
+    GET_DISASTER_API: BASE_URL + "disasterauth/detailsOfDisaster/:id",
+    FETCH_ALL_DISASTERS_API: BASE_URL + "disasterauth/allDisasters",
+}
+
+// ALERT END POINTS
+export const alertEndPoints = {
+    CREATE_ALERT_API: BASE_URL + "/alertsauth/createalerts",
+    GET_AGENCY_ALERTS_API: BASE_URL + "/alertsauth/getalerts",
+}
