@@ -5,12 +5,12 @@ const router = express.Router();
 // Routes
 
 // Add new Disaster
-router.route('/add').post(addDisaster);
+router.route('/addNewDisaster').post(addDisaster);
 // Updating disaster Info
-router.route('/update').post(updateDisaster);
+router.route('/updateDisaster').post(updateDisaster);
 // Fetching single disaster
-router.route('/details').post(getDisaster);
+router.route('/detailsOfDisaster').post(getDisaster);
 // Fetching all disasters
-router.route('/all').post(fetchDisasters);
+router.route('/allDisasters').post(fetchDisasters);
 
 export default router;
