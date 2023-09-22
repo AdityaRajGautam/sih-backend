@@ -3,44 +3,67 @@ import Agency from '../models/agency.js'; // Import your Agency model
 
 export const createResource = async (req, res) => {
   try {
-    const { name, quantity, status, availability} = req.body;
-    const ownerAgencyId = req.user._id; 
-    // Assuming you have user authentication and can access the owner agency's ID from the request
+    const { name, quantity, status, availability } = req.body;
+    const ownerAgencyId = req.user._id;
 
-    // Find the owner agency to get its location coordinates
     const ownerAgency = await Agency.findById(ownerAgencyId);
 
     if (!ownerAgency) {
       return res.status(404).json({ message: 'Owner agency not found' });
     }
 
-    // Create a new resource instance with the owner agency's location coordinates
-    const resource = new Resource({
+    // Check if a resource with the same name already exists for the owner agency
+    let existingResource = await Resource.findOne({
       name,
-      quantity,
-      location: {
-        type: 'Point',
-        coordinates: ownerAgency.location.coordinates,
-      },
       ownerAgency: ownerAgencyId,
-      status,
-      availability,
     });
 
-    // Save the resource to the database
-    await resource.save();
+    if (existingResource) {
+      // If the resource already exists, update its quantity, status, and availability
+      existingResource.quantity = quantity;
+      existingResource.status = status;
+      existingResource.availability = availability;
 
-    // Add the resource reference to the owner agency's resources
-    await Agency.findByIdAndUpdate(ownerAgencyId, {
-      $push: { resources: resource._id },
-    });
+      // Save the updated resource
+      await existingResource.save();
 
-    res.status(201).json({ message: 'Resource created and added successfully', resource });
+      res.status(200).json({
+        message: 'Resource updated successfully',
+        resource: existingResource,
+      });
+    } else {
+      // If the resource does not exist, create a new resource instance
+      const resource = new Resource({
+        name,
+        quantity,
+        location: {
+          type: 'Point',
+          coordinates: ownerAgency.location.coordinates,
+        },
+        ownerAgency: ownerAgencyId,
+        status,
+        availability,
+      });
+
+      // Save the resource to the database
+      await resource.save();
+
+      // Add the resource reference to the owner agency's resources
+      await Agency.findByIdAndUpdate(ownerAgencyId, {
+        $push: { resources: resource._id },
+      });
+
+      res.status(201).json({
+        message: 'Resource created and added successfully',
+        resource,
+      });
+    }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error creating resource', error });
+    res.status(500).json({ message: 'Error creating or updating resource', error });
   }
 };
+
 
 export const updateResource = async (req, res) => {
   try {

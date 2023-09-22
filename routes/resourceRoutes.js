@@ -1,4 +1,5 @@
 import express from "express";
+import { requireSignIn } from "../middlewares/authenticationMiddleware.js";
 import {
   createResource,
   updateResource,
@@ -11,7 +12,7 @@ import {
 const router = express.Router();
 
 // Create a new resource
-router.post("/create", createResource);
+router.post("/create", requireSignIn, createResource);
 
 // Update an existing resource by ID
 router.put("/update/:id", updateResource);
