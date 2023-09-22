@@ -2,6 +2,7 @@ import express  from "express";
 import agencyRoutes from './routes/agencyRoutes.js';
 import alertRoutes from './routes/alertRoutes.js';
 import disasterRoutes from './routes/disasterRoutes.js';
+import resourecRoutes from './routes/resourceRoutes.js';
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json())
 app.use('/api/n1/agencyauth',agencyRoutes);
 app.use('/api/n1/alertsauth',alertRoutes);
 app.use('/api/n1/disasterauth',disasterRoutes);
+app.use('/api/n1/resourceauth',resourecRoutes);
 
 
 // Rest Api  
