@@ -2,7 +2,6 @@ import axios from "axios";
 import Agency from "../models/agency.js";
 import Disaster from "../models/disaster.js";
 import Resource from "../models/resource.js";
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { comparePassword, hashPassword } from "../helpers/bcrypt.js";
 
@@ -48,7 +47,7 @@ export const registerAgency = async (req, res) => {
     console.log("Coordinates are ->>", features[0].center);
     const coordinates = features[0].center; // Corrected variable names
     
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
     const agency = new Agency({
       name,
       email,
