@@ -3,14 +3,12 @@ import { registerAgency, updateAgency, getAllAgencyLocations, updatePasswordCont
 
 const router = express.Router();
 
-// Routes
-
 // Route for adding new agency
 router.route('/register').post(registerAgency);
 // Route for login
 router.route('/login').post(loginAgency);
 // Route to update agency password
-router.route('/frogotpassword/').put(updatePasswordController);
+router.route('/updatepassword/').put(updatePasswordController);
 // Route to update agency details
 router.route('/update/:id').put(updateAgency);
 // Fetching agencies with typeOfDisaster resourcesAvailable and their locations filter

@@ -2,6 +2,8 @@ import axios from "axios";
 import Agency from "../models/agency.js";
 import Disaster from "../models/disaster.js";
 import Resource from "../models/resource.js";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { comparePassword, hashPassword } from "../helpers/bcrypt.js";
 
 // registerAgency controller
@@ -43,22 +45,22 @@ export const registerAgency = async (req, res) => {
     if (!features || features.length === 0) {
       return res.status(400).json({ message: "Invalid address" });
     }
-    const { lat, lng } = results[0].geometry.location;
-
-    const hashedPassword = await hashPassword(password);
-
+    console.log("Coordinates are ->>", features[0].center);
+    const coordinates = features[0].center; // Corrected variable names
+    
+    const hashedPassword = await bcrypt.hash(password, 10);
     const agency = new Agency({
       name,
       email,
       password: hashedPassword,
       contact,
       phoneNumber,
-      location: {
-        type: "Point",
-        coordinates: [lng, lat], // Longitude and Latitude
-      },
       expertise,
     });
+    agency.location = {
+      type: "Point",
+      coordinates: coordinates,
+    };
 
     // Save the agency to the database
     await agency.save();
@@ -105,7 +107,7 @@ export const loginAgency = async (req, res) => {
     }
 
     //token
-    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECERT, {
+    const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECERT, {
       expiresIn: "7d",
     });
     res.status(200).send({
@@ -126,11 +128,11 @@ export const loginAgency = async (req, res) => {
 //forgotpasswordController
 export const updatePasswordController = async (req, res) => {
   try {
-    if (!req.user) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: User is not logged in" });
-    }
+    // if (!req.user) {
+    //   return res
+    //     .status(401)
+    //     .json({ message: "Unauthorized: User is not logged in" });
+    // }
     const { email, oldpassword, newpassword } = req.body;
     if (!email || !newpassword) {
       res.status(400).send({ message: "All fields are mandatory" });
