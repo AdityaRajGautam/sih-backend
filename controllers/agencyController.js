@@ -2,7 +2,7 @@ import axios from "axios";
 import Agency from "../models/agency.js";
 import Disaster from "../models/disaster.js";
 import Resource from "../models/resource.js";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import { comparePassword, hashPassword } from "../helpers/bcrypt.js";
 
 // registerAgency controller
@@ -47,7 +47,7 @@ export const registerAgency = async (req, res) => {
     console.log("Coordinates are ->>", features[0].center);
     const coordinates = features[0].center;
     const swappedCoordinates = [coordinates[1], coordinates[0]];
-    
+
     const hashedPassword = await hashPassword(password);
     const agency = new Agency({
       name,
@@ -174,71 +174,55 @@ export const updatePasswordController = async (req, res) => {
 // update agency controller
 export const updateAgency = async (req, res) => {
   try {
-    if (!req.user) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: User is not logged in" });
-    }
 
     const { name, email, contact, phone, expertise } = req.body;
-    const agency = await Agency.findById(req.user._id);
+    const agency = await Agency.findById(req.params.id);
 
     // Check if the agency exists
     if (!agency) {
       return res.status(404).json({ message: "Agency not found" });
     }
+    if (contact) {
+      const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
+      const geocodingResponse = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          address
+        )}.json?access_token=${process.env.MAPBOX_API_KEY}`
+      );
 
-    const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
-    const geocodingResponse = await axios.get(
-      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-        address
-      )}.json?access_token=${MAPBOX_API_KEY}`
-    );
+      const features = geocodingResponse.data.features;
 
-    const features = geocodingResponse.data.features;
-
-    if (!features || features.length === 0) {
-      return res.status(400).json({ message: "Invalid address" });
+      if (!features || features.length === 0) {
+        return res.status(400).json({ message: "Invalid address" });
+      }
+      const { lat, lng } = results[0].geometry.location;
     }
-    const { lat, lng } = results[0].geometry.location;
-
     const updatedAgency = await Agency.findByIdAndUpdate(
-      req.user._id,
+      req.params.id,
       {
         name: name || agency.name,
         email: email || agency.email,
         contact: contact || agency.contact,
         phone: phone || agency.phone,
-        location:
-          {
-            location: {
-              type: "Point",
-              coordinates: [lng, lat], // Longitude and Latitude
-            },
-          } || agency.location,
+        location: contact
+          ? {
+              location: {
+                type: "Point",
+                coordinates: [lng, lat], 
+              },
+            }
+          : agency.location,
         expertise: expertise || agency.expertise,
       },
       { new: true }
     );
-    res.status(200).send({
-      success: true,
-      message: "Profile Updated Successfully",
-      // updatedUser,
-    });
-
-    // Update agency location if provided in the request body
-    if (req.body.location) {
-      if (req.body.location.type === "Point" && req.body.location.coordinates) {
-        agency.location = req.body.location;
-      } else {
-        return res.status(400).json({ message: "Invalid location data" });
-      }
-    }
 
     // Save the updated agency to the database
-    await agency.save();
+    await updatedAgency.save();
 
-    res.status(200).json({ message: "Agency updated successfully", agency });
+    res
+      .status(200)
+      .json({ message: "Agency updated successfully", updatedAgency });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error updating agency", error });
@@ -299,11 +283,9 @@ export const getAgencyResourcesAndDisasters = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "Error retrieving agency resources and disasters",
-        error,
-      });
+    res.status(500).json({
+      message: "Error retrieving agency resources and disasters",
+      error,
+    });
   }
 };
