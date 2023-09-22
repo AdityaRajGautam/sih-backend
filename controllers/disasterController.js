@@ -40,7 +40,7 @@ export const addDisaster = async (req, res) => {
     if (!features || features.length === 0) {
       return res.status(400).json({ message: "Invalid address" });
     }
-    const { lat, lng } = results[0].geometry.location;
+    const { lat, lng } = features[0].geometry.location;
 
     const newDisaster = await Disaster.create({
       typeOfDisaster,
@@ -100,7 +100,7 @@ export const updateDisaster = async (req, res) => {
       if (!features || features.length === 0) {
         return res.status(400).json({ message: "Invalid address" });
       }
-      const { lat, lng } = results[0].geometry.location;
+      const { lat, lng } = features[0].geometry.location;
     }
     // Updating disaster Info
     const updatedDisaster = await Disaster.findByIdAndUpdate(
