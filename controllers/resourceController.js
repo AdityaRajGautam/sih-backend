@@ -209,4 +209,3 @@ export const deleteResource = async (req, res) => {
     res.status(500).json({ message: 'Error deleting resource', error });
   }
 };
-
