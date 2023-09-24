@@ -42,7 +42,7 @@ export const addDisaster = async (req, res) => {
     const features = geocodingResponse.data.features;
 
     if (!features || features.length === 0) {
-      return res.status(400).json({ message: "Invalid address" });
+      return res.status(400).json({success:false, message: "Invalid address" });
     }
     console.log("Coordinates are ->>", features[0].center);
     const coordinates = features[0].center;
@@ -70,7 +70,7 @@ export const addDisaster = async (req, res) => {
       .json({ success: true, message: "New Disaster info added", newDisaster });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to create disaster record" });
+    res.status(500).json({ success:false, message: "Failed to create disaster record",error });
   }
 };
 
@@ -114,7 +114,7 @@ export const updateDisaster = async (req, res) => {
     const features = geocodingResponse.data.features;
 
     if (!features || features.length === 0) {
-      return res.status(400).json({ message: "Invalid address" });
+      return res.status(400).json({ success:false,message: "Invalid address" });
     }
     console.log("Coordinates are ->>", features[0].center);
     const coordinates = features[0].center;
@@ -145,7 +145,7 @@ export const updateDisaster = async (req, res) => {
       updatedDisaster,
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ success:false,message: "Internal server error",error });
   }
 };
 
@@ -155,11 +155,11 @@ export const getDisaster = async (req, res) => {
   try {
     const disaster = await Disaster.findById(id);
     if (!disaster) {
-      return res.status(404).json({ error: "NO record found" });
+      return res.status(404).json({ success:false,message: "NO record found" });
     }
     res.status(200).json({ success: true, disaster });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ success:false, message: "Internal Server Error",error });
   }
 };
 
@@ -169,8 +169,11 @@ export const fetchDisasters = async (req, res) => {
     const filter = filterResults(req.query);
     const disasters = await Disaster.find(filter).sort({ timestamp: -1 });
 
-    res.status(200).json({ success: true, disasters });
+    res.status(200).json({ success: true,message:"All the disaster fetched successfully", disasters });
   } catch (error) {
-    res.status(500).json({ error: "Internal server Error" });
+    res.status(500).json({ success:false,message: "Internal server Error",error });
   }
 };
+
+
+

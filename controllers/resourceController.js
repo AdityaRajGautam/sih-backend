@@ -9,7 +9,7 @@ export const createResource = async (req, res) => {
     const ownerAgency = await Agency.findById(ownerAgencyId);
 
     if (!ownerAgency) {
-      return res.status(404).json({ message: 'Owner agency not found' });
+      return res.status(404).json({ success:false,message: 'Owner agency not found' });
     }
 
     // Check if a resource with the same name already exists for the owner agency
@@ -28,6 +28,7 @@ export const createResource = async (req, res) => {
       await existingResource.save();
 
       res.status(200).json({
+        success:true,
         message: 'Resource updated successfully',
         resource: existingResource,
       });
@@ -54,13 +55,14 @@ export const createResource = async (req, res) => {
       });
 
       res.status(201).json({
+        success:true,
         message: 'Resource created and added successfully',
         resource,
       });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error creating or updating resource', error });
+    res.status(500).json({success:false, message: 'Error creating or updating resource', error });
   }
 };
 
@@ -74,7 +76,7 @@ export const updateResource = async (req, res) => {
     const resource = await Resource.findById(resourceId);
 
     if (!resource) {
-      return res.status(404).json({ message: 'Resource not found' });
+      return res.status(404).json({success:false, message: 'Resource not found' });
     }
 
     // Update resource fields if provided in the request body
@@ -97,10 +99,10 @@ export const updateResource = async (req, res) => {
     // Save the updated resource
     await resource.save();
 
-    res.status(200).json({ message: 'Resource updated successfully', resource });
+    res.status(200).json({success:true, message: 'Resource updated successfully', resource });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error updating resource', error });
+    res.status(500).json({ success:false, message: 'Error updating resource', error });
   }
 };
 
@@ -110,13 +112,13 @@ export const getResource = async (req, res) => {
     const resource = await Resource.findOne({ name: resourceName });
 
     if (!resource) {
-      return res.status(404).json({ message: 'Resource not found' });
+      return res.status(404).json({success:false, message: 'Resource not found' });
     }
 
-    res.status(200).json({ message: 'Resource retrieved successfully', resource });
+    res.status(200).json({success:true,message: 'Resource retrieved successfully', resource });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error retrieving resource', error });
+    res.status(500).json({ success:false, message: 'Error retrieving resource', error });
   }
 };
 
@@ -126,10 +128,10 @@ export const listResources = async (req, res) => {
     // Find all resources in the database
     const resources = await Resource.find();
 
-    res.status(200).json({ message: 'Resources retrieved successfully', resources });
+    res.status(200).json({ success:true, message: 'Resources retrieved successfully', resources });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error retrieving resources', error });
+    res.status(500).json({ success:false, message: 'Error retrieving resources', error });
   }
 };
 
@@ -146,10 +148,10 @@ export const getResourceStatus = async (req, res) => {
       availability: resource.availability,
     }));
 
-    res.status(200).json({ message: 'Resource status fetched successfully', resourceStatusList });
+    res.status(200).json({ success:true, message: 'Resource status fetched successfully', resourceStatusList });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error fetching resource status', error });
+    res.status(500).json({success:false, message: 'Error fetching resource status', error });
   }
 };
 
@@ -163,7 +165,7 @@ export const shareResource = async (req, res) => {
     const resource = await Resource.findById(resourceId);
 
     if (!resource) {
-      return res.status(404).json({ message: 'Resource not found' });
+      return res.status(404).json({success:false, message: 'Resource not found' });
     }
 
     // Check if the requesting agency owns the resource
@@ -175,10 +177,10 @@ export const shareResource = async (req, res) => {
     resource.sharedWith.push(sharedWithAgencyId);
     await resource.save();
 
-    res.status(200).json({ message: 'Resource shared successfully', resource });
+    res.status(200).json({ success:true, message: 'Resource shared successfully', resource });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error sharing resource', error });
+    res.status(500).json({success:false, message: 'Error sharing resource', error });
   }
 };
 
@@ -190,7 +192,7 @@ export const deleteResource = async (req, res) => {
     const resource = await Resource.findById(resourceId);
 
     if (!resource) {
-      return res.status(404).json({ message: 'Resource not found' });
+      return res.status(404).json({success:false, message: 'Resource not found' });
     }
 
     if (resource.ownerAgency.toString() !== ownerAgencyId.toString()) {
@@ -203,9 +205,10 @@ export const deleteResource = async (req, res) => {
 
     await Resource.findByIdAndRemove(resourceId);
 
-    res.status(200).json({ message: 'Resource deleted successfully' });
+    res.status(200).json({success:true, message: 'Resource deleted successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error deleting resource', error });
+    res.status(500).json({success:false, message: 'Error deleting resource', error });
   }
 };
+
