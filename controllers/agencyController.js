@@ -19,7 +19,7 @@ export const registerAgency = async (req, res) => {
     ) {
       return res.status(404).send({
         success: false,
-        message: "All the fields are required",
+        message: "All the fields are Mendatory",
       });
     }
 
@@ -74,7 +74,7 @@ export const registerAgency = async (req, res) => {
     console.error(error);
     res
       .status(500)
-      .json({ success: false, message: "Error registering agency", error });
+      .json({ success: false, message: "Something went wrong", error });
   }
 };
 
@@ -92,7 +92,7 @@ export const loginAgency = async (req, res) => {
     //check agency
     const user = await Agency.findOne({ email });
     if (!user) {
-      return res.status(404).send({
+      return res.status(401).send({
         success: false,
         message: "This email is not registered with us",
       });
@@ -126,7 +126,7 @@ export const loginAgency = async (req, res) => {
 };
 
 //forgotpasswordController
-export const updatePassword = async (req, res) => {
+export const updatePasswordController = async (req, res) => {
   try {
     // if (!req.user) {
     //   return res
@@ -135,7 +135,7 @@ export const updatePassword = async (req, res) => {
     // }
     const { email, oldpassword, newpassword } = req.body;
     if (!email || !newpassword) {
-      res.status(400).send({ message: "All fields are mandatory" });
+      res.status(400).send({ success:false, message: "All fields are mandatory" });
     }
 
     //check
@@ -180,7 +180,7 @@ export const updateAgency = async (req, res) => {
 
     // Check if the agency exists
     if (!agency) {
-      return res.status(404).json({ message: "Agency not found" });
+      return res.status(404).json({ success:false, message: "Agency not found" });
     }
 
     const address = `${contact.address.street}, ${contact.address.city}, ${contact.address.state}, ${contact.address.postalCode}, ${contact.address.country}`;
@@ -193,7 +193,7 @@ export const updateAgency = async (req, res) => {
     const features = geocodingResponse.data.features;
 
     if (!features || features.length === 0) {
-      return res.status(400).json({ message: "Invalid address" });
+      return res.status(400).json({ success:false, message: "Invalid address" });
     }
     console.log("Coordinates are ->>", features[0].center);
     const coordinates = features[0].center;
@@ -216,10 +216,10 @@ export const updateAgency = async (req, res) => {
 
     res
       .status(200)
-      .json({ message: "Agency updated successfully", updatedAgency });
+      .json({success:true, message: "Agency updated successfully", updatedAgency });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error updating agency", error });
+    res.status(500).json({success:false, message: "Error updating agency", error });
   }
 };
 
@@ -240,12 +240,13 @@ export const getAllAgencyLocations = async (req, res) => {
     });
 
     res.status(200).json({
+      success:true,
       message: "All agency locations retrieved successfully",
       agencies: agencyLocations,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error fetching agency locations", error });
+    res.status(500).json({ success:false, message: "Error fetching agency locations", error });
   }
 };
 
@@ -259,7 +260,7 @@ export const getAgencyResourcesAndDisasters = async (req, res) => {
     const agency = await Agency.findById(agencyId);
 
     if (!agency) {
-      return res.status(404).json({ message: "Agency not found" });
+      return res.status(404).json({ success:false, message: "Agency not found" });
     }
 
     // Retrieve all resources associated with the agency
@@ -277,8 +278,17 @@ export const getAgencyResourcesAndDisasters = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
+      success:false,
       message: "Error retrieving agency resources and disasters",
       error,
     });
   }
 };
+
+
+
+
+
+
+
+

@@ -2,7 +2,7 @@ import agency from '../models/agency.js';
 import alert from '../models/alert.js';
 
 // Create a new alert
-export const createAlert = async (req, res) => {
+export const createAlertController = async (req, res) => {
   try {
     const {
         senderAgency,
@@ -23,7 +23,7 @@ export const createAlert = async (req, res) => {
     }
 
     
-    const newAlert = await new Alert({
+    const newAlert = await new alert({
         senderAgency,
         recipientAgency,
         severity,
@@ -38,13 +38,13 @@ export const createAlert = async (req, res) => {
   } catch (error) {
     res.status(500).json({ 
         success:false,
-        error: 'Internal server error' });
+        error: 'Something went wrong' });
   }
 };
 
 
 // Get alerts for a specific agency
-export const getAlertsForAgency = async (req, res) => {
+export const getAlertsForAgencyController = async (req, res) => {
   try {
     const senderAgencyId = req.user._id;
     const senderAgencies = await agency.findById(senderAgencyId);
@@ -68,6 +68,16 @@ export const getAlertsForAgency = async (req, res) => {
       });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ success:false, error: 'Something went wrong' });
   }
 };
+
+
+
+
+
+
+
+
+
+
