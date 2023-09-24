@@ -1,6 +1,7 @@
 import ConnectDB from "./config/db.js";
 import app from './app.js'
 import dotenv from 'dotenv';
+import cors from "cors";
 
 // Handling Uncaught Execption
 process.on('uncaughtException',(err)=>{
@@ -8,6 +9,7 @@ process.on('uncaughtException',(err)=>{
   console.log(`Shutting server due to uncaught execption`);
   process.exit(1);
 })
+app.use(cors());
 
 // Config
 dotenv.config();

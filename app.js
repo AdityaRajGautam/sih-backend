@@ -3,11 +3,13 @@ import agencyRoutes from './routes/agencyRoutes.js';
 import alertRoutes from './routes/alertRoutes.js';
 import disasterRoutes from './routes/disasterRoutes.js';
 import resourecRoutes from './routes/resourceRoutes.js';
+import cors from "cors";
 
 const app = express();
 
 // Middlewares
 app.use(express.json())
+app.use(cors());
 
 // Routes
 app.use('/api/n1/agency',agencyRoutes);
