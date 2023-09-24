@@ -9,7 +9,7 @@ router.route('/register').post(registerAgency);
 // Route for login
 router.route('/login').post(loginAgency);
 // Route to update agency password
-router.route('/updatepassword/').put(updatePassword);
+router.route('/updatepassword').put(updatePassword);
 // Route to update agency details
 router.route('/update').put(requireSignIn,updateAgency);
 // Fetching agencies with typeOfDisaster resourcesAvailable and their locations filter
