@@ -1,5 +1,5 @@
 import express  from "express";
-import { registerAgency, updateAgency, getAllAgencyLocations, updatePassword, getAgencyResourcesAndDisasters, loginAgency } from "../controllers/agencyController.js";
+import { registerAgency, updateAgency, getAllAgencyLocations, updatePassword, getAgencyResourcesAndDisasters, loginAgency, agencyProfile } from "../controllers/agencyController.js";
 import { requireSignIn } from "../middlewares/authenticationMiddleware.js";
 
 const router = express.Router();
@@ -16,5 +16,7 @@ router.route('/update').put(requireSignIn,updateAgency);
 router.route('/list/:id').get(getAgencyResourcesAndDisasters);
 // Fetch all the agencies locations
 router.route('/agencyLocations').get(getAllAgencyLocations);
+
+router.route('/agencyProfile').get(requireSignIn, agencyProfile);
 
 export default router

@@ -92,7 +92,7 @@ export const loginAgency = async (req, res) => {
     //check agency
     const user = await Agency.findOne({ email });
     if (!user) {
-      return res.status(404).send({
+      return res.status(201).send({
         success: false,
         message: "This email is not registered with us",
       });
@@ -282,3 +282,27 @@ export const getAgencyResourcesAndDisasters = async (req, res) => {
     });
   }
 };
+
+// Import the Agency model (assuming you have defined it)
+
+
+export const agencyProfile = async (req, res) => {
+  try {
+    // Fetch the agency from the database by ID and exclude the 'password' field
+    const agency = await Agency.findById(req.user._id).select('-password');
+
+    // Check if the agency with the provided ID exists
+    if (!agency) {
+      return res.status(404).json({ message: 'Agency not found' });
+    }
+
+    // If the agency is found, send it as a response
+    res.status(200).json({ agency });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
