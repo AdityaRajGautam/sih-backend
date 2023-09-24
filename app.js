@@ -10,10 +10,10 @@ const app = express();
 app.use(express.json())
 
 // Routes
-app.use('/api/n1/agencyauth',agencyRoutes);
-app.use('/api/n1/alertsauth',alertRoutes);
-app.use('/api/n1/disasterauth',disasterRoutes);
-app.use('/api/n1/resourceauth',resourecRoutes);
+app.use('/api/n1/agency',agencyRoutes);
+app.use('/api/n1/alert',alertRoutes);
+app.use('/api/n1/disaster',disasterRoutes);
+app.use('/api/n1/resource',resourecRoutes);
 
 
 // Rest Api  

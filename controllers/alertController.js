@@ -2,7 +2,7 @@ import agency from '../models/agency.js';
 import alert from '../models/alert.js';
 
 // Create a new alert
-export const createAlertController = async (req, res) => {
+export const createAlert = async (req, res) => {
   try {
     const {
         senderAgency,
@@ -44,7 +44,7 @@ export const createAlertController = async (req, res) => {
 
 
 // Get alerts for a specific agency
-export const getAlertsForAgencyController = async (req, res) => {
+export const getAlertsForAgency = async (req, res) => {
   try {
     const senderAgencyId = req.user._id;
     const senderAgencies = await agency.findById(senderAgencyId);

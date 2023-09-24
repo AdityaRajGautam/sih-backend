@@ -126,7 +126,7 @@ export const loginAgency = async (req, res) => {
 };
 
 //forgotpasswordController
-export const updatePasswordController = async (req, res) => {
+export const updatePassword = async (req, res) => {
   try {
     // if (!req.user) {
     //   return res
