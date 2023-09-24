@@ -126,7 +126,7 @@ export const loginAgency = async (req, res) => {
 };
 
 //forgotpasswordController
-export const updatePasswordController = async (req, res) => {
+export const updatePassword = async (req, res) => {
   try {
     // if (!req.user) {
     //   return res
@@ -282,5 +282,23 @@ export const getAgencyResourcesAndDisasters = async (req, res) => {
       message: "Error retrieving agency resources and disasters",
       error,
     });
+  }
+};
+
+export const agencyProfile = async (req, res) => {
+  try {
+    // Fetch the agency from the database by ID and exclude the 'password' field
+    const agency = await Agency.findById(req.user._id).select('-password');
+
+    // Check if the agency with the provided ID exists
+    if (!agency) {
+      return res.status(404).json({ message: 'Agency not found' });
+    }
+
+    // If the agency is found, send it as a response
+    res.status(200).json({ agency });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
