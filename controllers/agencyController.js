@@ -128,22 +128,20 @@ export const loginAgency = async (req, res) => {
 //forgotpasswordController
 export const updatePassword = async (req, res) => {
   try {
-    // if (!req.user) {
-    //   return res
-    //     .status(401)
-    //     .json({ message: "Unauthorized: User is not logged in" });
-    // }
-    const { email, oldpassword, newpassword } = req.body;
-    if (!email || !newpassword) {
+    const { oldpassword, newpassword } = req.body;
+    if (!oldpassword || !newpassword) {
       res.status(400).send({ success:false, message: "All fields are mandatory" });
     }
 
-    //check
-    const user = await Agency.findOne({ email });
+    const agencyId = req.user._id; // Change the parameter name to agencyId
+    console.log(agencyId);
+
+    // Find the agency by ID
+    const user = await Agency.findById(agencyId);
     if (!user) {
       return res.status(404).send({
         success: false,
-        message: "Email is invalid",
+        message: "not Registered",
       });
     }
 
@@ -253,7 +251,7 @@ export const getAllAgencyLocations = async (req, res) => {
 // getAgencyResourcesAndDisasters
 export const getAgencyResourcesAndDisasters = async (req, res) => {
   try {
-    const agencyId = req.params.id; // Change the parameter name to agencyId
+    const agencyId = req.user._id; // Change the parameter name to agencyId
     console.log(agencyId);
 
     // Find the agency by ID
