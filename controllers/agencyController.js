@@ -255,7 +255,7 @@ export const getAgencyResourcesAndDisasters = async (req, res) => {
     console.log(agencyId);
 
     // Find the agency by ID
-    const agency = await Agency.findById(agencyId);
+    const agency = await Agency.findById(agencyId).select('-password');
 
     if (!agency) {
       return res.status(404).json({ success:false, message: "Agency not found" });
