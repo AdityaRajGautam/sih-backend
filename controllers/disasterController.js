@@ -114,7 +114,7 @@ export const updateDisaster = async (req, res) => {
     const features = geocodingResponse.data.features;
 
     if (!features || features.length === 0) {
-      return res.status(400).json({ success:false,message: "Invalid address" });
+      return res.status(400).json({ success:false, message: "Invalid address" });
     }
     console.log("Coordinates are ->>", features[0].center);
     const coordinates = features[0].center;
@@ -134,7 +134,10 @@ export const updateDisaster = async (req, res) => {
         $addToSet: { agencies: agencyId }, // Add the new agency ID to the list
         status: status || oldDisaster.status,
         severity: severity || oldDisaster.severity,
-        location: swappedCoordinates || oldDisaster.location,
+        location: {
+          type: "Point",
+          coordinates: swappedCoordinates || oldDisaster.location.coordinates,
+        },
       },
       { new: true }
     );
@@ -145,9 +148,10 @@ export const updateDisaster = async (req, res) => {
       updatedDisaster,
     });
   } catch (error) {
-    res.status(500).json({ success:false,message: "Internal server error",error });
+    res.status(500).json({ success:false, message: "Internal server error", error });
   }
 };
+
 
 // Fetch a disaster
 export const getDisaster = async (req, res) => {

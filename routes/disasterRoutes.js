@@ -8,7 +8,7 @@ const router = express.Router();
 // Add new Disaster
 router.route('/addDisaster').post(requireSignIn, addDisaster);
 // Updating disaster Info
-router.route('/updateDisaster/:id').post(requireSignIn, updateDisaster);
+router.route('/updateDisaster/:id').put(requireSignIn, updateDisaster);
 // Fetching single disaster
 router.route('/getDisaster/:id').get(getDisaster);
 // Fetching all disasters
