@@ -18,7 +18,6 @@ const disasterSchema = new mongoose.Schema({
     type: String,
     enum:["active","inactive"],
     default:'active',
-    required: true,
   },
   contact: {
     address: {
