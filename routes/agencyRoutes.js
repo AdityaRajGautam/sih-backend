@@ -1,7 +1,7 @@
 import express  from "express";
 import { registerAgency, updateAgency, getAllAgencyLocations,
      updatePassword, getAgencyResourcesAndDisasters,
-      loginAgency, agencyProfile, findAgency } from "../controllers/agencyController.js";
+      loginAgency, agencyProfile, findAgency, findAllAgencies } from "../controllers/agencyController.js";
 import { requireSignIn } from "../middlewares/authenticationMiddleware.js";
 
 const router = express.Router();
@@ -24,5 +24,8 @@ router.route('/agencyProfile').get(requireSignIn, agencyProfile);
 
 // list the agency with the id number
 router.route('/findAgency/:id').get(requireSignIn, findAgency);
+
+// fetch all the agencies
+router.route('/findAllAgencies').get(requireSignIn, findAllAgencies);
 
 export default router

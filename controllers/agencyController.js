@@ -321,3 +321,18 @@ export const findAgency = async(req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const findAllAgencies = async (req, res) => {
+  try{
+
+    const agency = await Agency.find();
+    if (!agency) {
+      return res.status(201).json({ message: 'Agency not found' });
+    }
+    res.status(200).json({ agency });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
