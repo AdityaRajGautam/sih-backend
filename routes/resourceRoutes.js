@@ -21,7 +21,7 @@ router.put("/update/:id",requireSignIn, updateResource);
 router.get("/getResources/:resourceName", getResource);
 
 // List all available shared resources
-router.get("/listResources", listResources);
+router.get("/listResources",requireSignIn, listResources);
 
 // Get the status and availability of shared resources
 router.get("/statusOfResources", getResourceStatus);

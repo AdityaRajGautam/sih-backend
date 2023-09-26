@@ -300,3 +300,24 @@ export const agencyProfile = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const findAgency = async(req, res) => {
+  try{
+    const { id } = req.params;
+    const agency = await Agency.findById(id);
+    if (!agency) {
+      return res.status(201).json({ message: 'Agency not found' });
+    }
+
+    const resources = await Resource.find({ ownerAgency: agency._id });
+
+    // Retrieve all disasters in which the agency has worked
+    const disasters = await Disaster.find({ agencies: agency._id });
+
+
+    res.status(200).json({ agency, resources, disasters });
+  }catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

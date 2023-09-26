@@ -8,6 +8,6 @@ const router=express.Router();
 router.route('/createalerts').post(requireSignIn,createAlert);
 
 // Fetching all the  alerts 
-router.route('/getalerts/').get(requireSignIn,getAlertsForAgency);
+router.route('/getalerts').get(requireSignIn,getAlertsForAgency);
 
 export default router;

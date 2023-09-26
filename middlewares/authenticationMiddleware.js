@@ -9,7 +9,6 @@ export const requireSignIn = async (req, res, next) => {
 
     // Decoding JWT
     const decoded = jwt.verify(token, process.env.JWT_SECERT);
-    console.log(decoded);
     req.user = decoded;
     next();
   } catch (error) {

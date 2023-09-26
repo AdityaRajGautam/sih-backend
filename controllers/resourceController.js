@@ -127,8 +127,11 @@ export const listResources = async (req, res) => {
   try {
     // Find all resources in the database
     const resources = await Resource.find();
+    const agencyId = req.user._id;
+    console.log(agencyId);
+    const agency = await Agency.findById(agencyId);
 
-    res.status(200).json({ success:true, message: 'Resources retrieved successfully', resources });
+    res.status(200).json({ success:true, message: 'Resources retrieved successfully', resources, agency });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success:false, message: 'Error retrieving resources', error });
