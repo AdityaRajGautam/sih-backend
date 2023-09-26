@@ -10,7 +10,7 @@ router.route('/addDisaster').post(requireSignIn, addDisaster);
 // Updating disaster Info
 router.route('/updateDisaster/:id').post(requireSignIn, updateDisaster);
 // Fetching single disaster
-router.route('/detailsOfDisaster/:id').get(getDisaster);
+router.route('/getDisaster/:id').get(getDisaster);
 // Fetching all disasters
 router.route('/allDisasters').get(fetchDisasters);
 
