@@ -179,5 +179,27 @@ export const fetchDisasters = async (req, res) => {
   }
 };
 
+// Fetch all agencies related to a specific disaster
+export const getAgenciesForDisaster = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the disaster by its ID and populate the agencies field
+    const disaster = await Disaster.findById(id).populate('agencies');
+    console.log(id);
+
+    if (!disaster) {
+      return res.status(404).json({ message: 'Disaster not found' });
+    }
+
+    // Extract the agencies from the populated disaster object
+    const agencies = disaster.agencies;
+
+    res.status(200).json(agencies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 
