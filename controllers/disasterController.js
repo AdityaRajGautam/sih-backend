@@ -203,3 +203,36 @@ export const getAgenciesForDisaster = async (req, res) => {
 };
 
 
+export const deleteDisaster = async (req, res) => {
+  try {
+    const disasterId = req.params.disasterId;
+    const ownerAgencyId = req.user._id; // Assuming you have authentication middleware
+
+    // Find the disaster by ID
+    const disaster = await Disaster.findById(disasterId);
+
+    // Check if the disaster exists
+    if (!disaster) {
+      return res.status(404).json({ success: false, message: "Disaster not found" });
+    }
+
+    // Check if the requesting agency owns the disaster
+    if (disaster.agencies.some(agencyId => agencyId.toString() !== ownerAgencyId.toString())) {
+      return res.status(403).json({ success: false, message: "Permission denied. You are not the owner of this disaster." });
+    }
+
+    // Remove the disaster from the agencies' resources
+    await Disaster.updateMany(
+      { _id: { $in: disaster.agencies } },
+      { $pull: { agencies: disasterId } }
+    );
+
+    // Delete the disaster
+    await Disaster.findByIdAndRemove(disasterId);
+
+    res.status(200).json({ success: true, message: "Disaster deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error deleting disaster", error });
+  }
+};
