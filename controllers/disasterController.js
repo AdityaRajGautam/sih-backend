@@ -24,7 +24,7 @@ export const addDisaster = async (req, res) => {
     !description ||
     !contact ||
     !status ||
-     severity
+    !severity
   ) {
     return res
       .status(400)
