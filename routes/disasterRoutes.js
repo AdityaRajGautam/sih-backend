@@ -16,6 +16,6 @@ router.route('/allDisasters').get(fetchDisasters);
 
 router.route('/getAgenciesForDisaster/:id').get(getAgenciesForDisaster);
 
-router.route('/deleteDisaster/:id').delete(requireSignIn,deleteDisaster);
+router.route('/deleteDisaster/:disasterId').delete(requireSignIn,deleteDisaster);
 
 export default router;

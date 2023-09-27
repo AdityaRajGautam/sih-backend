@@ -27,7 +27,7 @@ export const disasterEndPoints = {
     UPDATE_DISASTER_API: BASE_URL + "/disaster/updateDisaster/:id",
     GET_DISASTER_API: BASE_URL + "disaster/getDisaster/:id",
     FETCH_ALL_DISASTERS_API: BASE_URL + "disaster/fetchDisasters",
-    DELETE_DISASTER_API: BASE_URL + "disaster/deleteDisaster/:id",
+    DELETE_DISASTER_API: BASE_URL + "disaster/deleteDisaster/:disasterId",
 }
 
 // ALERT END POINTS
