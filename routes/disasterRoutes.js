@@ -1,6 +1,6 @@
 import express  from "express";
 import { requireSignIn } from "../middlewares/authenticationMiddleware.js";
-import { addDisaster, fetchDisasters, getDisaster, updateDisaster, getAgenciesForDisaster } from "../controllers/disasterController.js";
+import { addDisaster, fetchDisasters, getDisaster, updateDisaster, getAgenciesForDisaster, deleteDisaster } from "../controllers/disasterController.js";
 const router = express.Router();
 
 // Routes
@@ -15,5 +15,7 @@ router.route('/getDisaster/:id').get(getDisaster);
 router.route('/allDisasters').get(fetchDisasters);
 
 router.route('/getAgenciesForDisaster/:id').get(getAgenciesForDisaster);
+
+router.route('/deleteDisaster/:id').delete(requireSignIn,deleteDisaster);
 
 export default router;
