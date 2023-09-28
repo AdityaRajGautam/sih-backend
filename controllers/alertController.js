@@ -5,17 +5,17 @@ import alert from '../models/alert.js';
 export const createAlert = async (req, res) => {
   try {
     const {
-        senderAgency,
         recipientAgency,
         severity,
-        timestamp,
         description,
       } = req.body;  
+      console.log("ii",recipientAgency);
 
     const senderAgencyId = req.user._id;
-    const senderAgencies = await agency.findById(senderAgencyId);
+    console.log(senderAgencyId)
+    const receiptAgencyId = await agency.findById(recipientAgency);
 
-    if (!senderAgencies) {
+    if (!receiptAgencyId) {
       return res.status(404).json({ 
         success:false,
         message: 'Sender agency not found' 
@@ -24,13 +24,12 @@ export const createAlert = async (req, res) => {
 
     
     const newAlert = await new alert({
-        senderAgency,
+        senderAgency:senderAgencyId,
         recipientAgency,
         severity,
-        timestamp,
         description,
       }).save();
-
+;
     res.status(201).json({
         success:true,
         message:"Alert sent successfully",
@@ -49,6 +48,7 @@ export const getAlertsForAgency = async (req, res) => {
     const senderAgencyId = req.user._id;
     const senderAgencies = await agency.findById(senderAgencyId);
 
+    console.log("hello",senderAgencyId)
     if (!senderAgencies) {
       return res.status(404).json({ 
         success:false,
@@ -58,9 +58,9 @@ export const getAlertsForAgency = async (req, res) => {
 
     // const agencyId = req.params.agencyId;
     const alerts = await alert.find({ recipientAgency: senderAgencyId })
-    if (!alerts || alerts.length===0) {
-        return res.status(404).json({ error: "NO Record found" });
-      }
+    // if (!alerts || alerts.length===0) {
+    //     return res.status(404).json({ error: "NO Record found " });
+    //   }
     res.status(200).json({
         success: true,
         message:"Alerts fetch successfully",
