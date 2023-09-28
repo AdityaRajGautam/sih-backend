@@ -32,6 +32,6 @@ export const disasterEndPoints = {
 
 // ALERT END POINTS
 export const alertEndPoints = {
-    CREATE_ALERT_API: BASE_URL + "/alert/createAlert",
-    GET_AGENCY_ALERTS_API: BASE_URL + "/alert/getAlertsForAgency",
+    CREATE_ALERT_API: BASE_URL + "/alert/createalerts",
+    GET_AGENCY_ALERTS_API: BASE_URL + "/alert/getalerts",
 }
