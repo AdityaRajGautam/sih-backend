@@ -108,8 +108,9 @@ export const updateResource = async (req, res) => {
 
 export const getResource = async (req, res) => {
   try {
-    const { resourceName } = req.params; 
-    const resource = await Resource.findOne({ name: resourceName });
+    const resourceId = req.params.id; 
+    console.log("Resource ki id: ->", resourceId);
+    const resource = await Resource.findById(resourceId);
 
     if (!resource) {
       return res.status(404).json({success:false, message: 'Resource not found' });
@@ -126,10 +127,9 @@ export const getResource = async (req, res) => {
 export const listResources = async (req, res) => {
   try {
     // Find all resources in the database
-    const resources = await Resource.find();
     const agencyId = req.user._id;
-    console.log(agencyId);
     const agency = await Agency.findById(agencyId);
+    const resources = await Resource.find({ownerAgency: agency});
 
     res.status(200).json({ success:true, message: 'Resources retrieved successfully', resources, agency });
   } catch (error) {

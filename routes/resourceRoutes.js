@@ -15,19 +15,19 @@ const router = express.Router();
 router.post("/create", requireSignIn, createResource);
 
 // Update an existing resource by ID
-router.put("/update/:id",requireSignIn, updateResource);
+router.put("/updateResource/:id",requireSignIn, updateResource);
 
 // Get details about a specific resource by name
-router.get("/getResources/:resourceName", getResource);
+router.get("/getResources/:id", requireSignIn, getResource);
 
 // List all available shared resources
 router.get("/listResources",requireSignIn, listResources);
 
 // Get the status and availability of shared resources
-router.get("/statusOfResources", getResourceStatus);
+router.get("/statusOfResources", requireSignIn, getResourceStatus);
 
 // Share a resource with another agency
-router.post("/shareResources",requireSignIn, shareResource);
+router.post("/shareResources", requireSignIn, shareResource);
 
 // Delete a resource by ID
 router.delete("/deleteResource/:resourceId",requireSignIn, deleteResource);

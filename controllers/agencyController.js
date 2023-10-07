@@ -174,7 +174,6 @@ export const updateAgency = async (req, res) => {
   try {
     const { name, email, contact, phone, expertise } = req.body;
     const agency = await Agency.findById(req.user._id);
-    console.log(agency);
 
     // Check if the agency exists
     if (!agency) {
@@ -193,14 +192,14 @@ export const updateAgency = async (req, res) => {
     if (!features || features.length === 0) {
       return res.status(400).json({ success:false, message: "Invalid address" });
     }
-    console.log("Coordinates are ->>", features[0].center);
     const coordinates = features[0].center;
     const swappedCoordinates = [coordinates[1], coordinates[0]];
 
     agency.name = name || agency.name;
     agency.email = email || agency.email;
     agency.contact = contact || agency.contact;
-    agency.phone = phone || agency.phone;
+    agency.phone = phone;
+    console.log("Phone ->", phone);
     agency.expertise = expertise || agency.expertise;
 
     // Update the location coordinates
