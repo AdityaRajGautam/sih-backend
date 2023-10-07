@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const alertSchema=new mongoose.Schema({
+const alertSchema = new mongoose.Schema({
   senderAgency: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Agency',
@@ -21,6 +21,7 @@ const alertSchema=new mongoose.Schema({
   },
   description: {
     type: String,
+    required: true,
   },
 });
 
