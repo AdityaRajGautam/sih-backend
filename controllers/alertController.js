@@ -4,32 +4,19 @@ import alert from '../models/alert.js';
 // Create a new alert
 export const createAlert = async (req, res) => {
   try {
-    const {
-      recipientAgency,
-      severity,
-      description,
-    } = req.body;
-
-    console.log("recipientAgency:", recipientAgency);
-    console.log("senderAgencyId:", req.user._id);
-
+    const { recipientAgency, severity, description } = req.body;
     const senderAgencyId = req.user._id;
 
-    // Convert recipientAgency to a string for direct comparison
-    const recipientAgencyId = recipientAgency.toString();
-
-    if (recipientAgencyId === senderAgencyId.toString()) {
+    if (recipientAgency.toString() === senderAgencyId.toString()) {
       return res.status(403).json({
         success: false,
         message: 'You cannot send alert to yourself',
       });
     }
 
-    // The rest of your code remains the same
-
     const newAlert = await new alert({
       senderAgency: senderAgencyId,
-      recipientAgency,
+      recipientAgency: recipientAgency, // Save recipient agency ID
       severity,
       description,
     }).save();
@@ -48,33 +35,22 @@ export const createAlert = async (req, res) => {
 };
 
 
-
 export const getAlertsForAgency = async (req, res) => {
   try {
-    const senderAgencyId = req.user._id;
-    const senderAgencies = await agency.findById(senderAgencyId);
+    const agencyId = req.user._id;
 
-    console.log("hello",senderAgencyId)
-    if (!senderAgencies) {
-      return res.status(404).json({ 
-        success:false,
-        message: 'Sender agency not found' 
-      });
-    }
+    const receivedAlerts = await alert.find({ recipientAgency: agencyId });
+    const sentAlerts = await alert.find({ senderAgency: agencyId });
 
-    // const agencyId = req.params.agencyId;
-    const alerts = await alert.find({ recipientAgency: senderAgencyId })
-    // if (!alerts || alerts.length===0) {
-    //     return res.status(404).json({ error: "NO Record found " });
-    //   }
     res.status(200).json({
-        success: true,
-        message:"Alerts fetch successfully",
-        alerts,
-      });
+      success: true,
+      message: "Alerts fetched successfully",
+      receivedAlerts,
+      sentAlerts,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success:false, error: 'Something went wrong' });
+    res.status(500).json({ success: false, error: 'Something went wrong' });
   }
 };
 
