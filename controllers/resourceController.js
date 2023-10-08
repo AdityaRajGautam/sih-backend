@@ -88,9 +88,7 @@ export const updateResource = async (req, res) => {
       resource.name = name;
     }
 
-    if(status !== status) {
-        resource.status = status;
-    }
+    resource.status = status;
 
     if(availability !== resource.availability) {
         resource.availability = availability;
@@ -105,6 +103,7 @@ export const updateResource = async (req, res) => {
     res.status(500).json({ success:false, message: 'Error updating resource', error });
   }
 };
+
 
 export const getResource = async (req, res) => {
   try {

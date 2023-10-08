@@ -25,11 +25,11 @@ const resourceSchema = new mongoose.Schema({
     required: true,
   },
   status: {
-    type: String, // You can define specific statuses, e.g., 'available', 'in-use', 'under-repair', etc.
+    type: String,
     required: true,
   },
   availability: {
-    type: String,
+    type: Boolean,
     required: true,
     default: true,
   },
